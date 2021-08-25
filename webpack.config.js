@@ -2,13 +2,12 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (env) => {
-  // console.log('ENV!!!!@@@@@@@:', env, env.NODE_ENV)
   return {
     entry: './client/index.js',
     output: {
       path: path.resolve(__dirname, 'build'),
       filename: 'bundle.js',
-      publicPath: '/'
+      publicPath: '/build/'
     },
     mode: env.NODE_ENV,
     plugins: [new MiniCssExtractPlugin()],
@@ -35,14 +34,9 @@ module.exports = (env) => {
           use: [MiniCssExtractPlugin.loader, "css-loader"],
         }
       ],
-      resolve: {
-        extensions: ['.js', '.jsx']
-      },
     },
     devServer: {
-      host: 'localhost',
       hot: true,
-      publicPath: '/',
       proxy: {
         '/api': 'http://localhost:3000'
       },
