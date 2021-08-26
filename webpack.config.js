@@ -38,7 +38,10 @@ module.exports = (env) => {
     devServer: {
       hot: true,
       proxy: {
-        '/api': 'http://localhost:3000'
+        '/api/**': {
+          target: 'http://localhost:3000',
+          secure: false,
+        },
       },
       // static: {
       //   directory: path.join(__dirname, 'build'),

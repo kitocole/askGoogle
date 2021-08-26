@@ -1,4 +1,5 @@
 import React, { useState, Component } from 'react';
+import fetch from 'node-fetch';
 
 const useInput = init => {
   const [ value, setValue ] = useState(init);
@@ -9,22 +10,23 @@ const useInput = init => {
   return [ value, onChange ];
 };
 
+//Query and Language text box with sumbit button.
 const QueryBox = props => {
   const [ query, queryOnChange] = useInput('');
-
-  const saveQuery = () => {
-    if (query === '') return;
-    else {
-      console.log(query)
-      return;
-    }
-  }
+  const [ lang, langOnChange] = useInput('');
   
     return(
       <div>
-        <label htmlFor="query">Enter question here: </label>
-        <input name="query" placeholder="what is a variable" value={query} onChange={queryOnChange}/>
-        <button type="submit" className="btnMain" onClick={saveQuery}>Click pls</button>
+        <div>
+          <label htmlFor="query">Enter question here: </label>
+          <input name="query" placeholder="what is a variable" value={query} onChange={queryOnChange}/>
+        </div>
+        <div>
+          <label htmlFor="language">What language?</label>
+          <input name="language" placeholder="javascript" value={lang} onChange={langOnChange}/>
+        </div>
+        <button type="submit" className="btnMain" onClick={() => {props.handleClick(query,lang)}}>Save Query</button>
+        <button className="btnSecondary" onClick={props.showHist}>History</button>
       </div> 
     )
 }
