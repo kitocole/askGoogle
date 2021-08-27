@@ -20,6 +20,7 @@ class MainContainer extends Component {
     this.deleteHistory = this.deleteHistory.bind(this);
     this.hideHistory = this.hideHistory.bind(this);
     this.restoreHistory = this.restoreHistory.bind(this);
+    this.getResults = this.getResults.bind(this);
   }
 
   addQuery(query,lang) {
@@ -77,7 +78,8 @@ class MainContainer extends Component {
         queryArr.push({
           query: data[i].question, 
           language: data[i].language, 
-          combined: data[i].generatedQuery
+          combined: data[i].generatedQuery,
+          results: data[i].results
         });
       }
     })
@@ -105,7 +107,8 @@ class MainContainer extends Component {
           histArr.push({
             query: data[i].question, 
             language: data[i].language,
-            combined: data[i].generatedQuery
+            combined: data[i].generatedQuery,
+            results: data[i].results
           });
         }
         // console.log(histArr);
@@ -142,7 +145,28 @@ class MainContainer extends Component {
     })
   };
 
-  
+  getResults(question, language, combined, index) {
+    const arr = [...this.state.queryList];
+    console.log(arr[index]);
+    const body = {question, language, combined}
+    fetch('/api/bing/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'Application/JSON'
+      },
+      body: JSON.stringify(body)
+    })
+    .then(results => results.json())
+    .then((data) => {
+      // arr[index].results = data;
+      // console.log(data);
+      this.getQueries();
+      
+    })
+    return;
+  }
+
+
   render() {
     return(
       <div className="container">
@@ -151,10 +175,18 @@ class MainContainer extends Component {
           <QueryBox handleClick={this.addQuery} showHist={this.showHistory} />
           <div className="lists">
             <div className="queryList">
-              <QueriesList queryList={this.state.queryList} deleteQuery={this.deleteQuery}/>
+              <QueriesList 
+              getResults={this.getResults} 
+              queryList={this.state.queryList} 
+              deleteQuery={this.deleteQuery}
+              />
             </div>
             <div className="histList">
-              <HistoryList histList={this.state.histList} restoreHist={this.restoreHistory} deleteHist={this.deleteHistory} />
+              <HistoryList 
+              histList={this.state.histList} 
+              restoreHist={this.restoreHistory} 
+              deleteHist={this.deleteHistory} 
+              />
             </div>
           </div>
         </div>

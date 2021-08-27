@@ -1,4 +1,6 @@
 const queryController = {};
+const API_KEY = 'ca7b702bf6c646449330d37df9ae1dc9';
+const fetch = require('node-fetch');
 
 const { Queries, Histories } = require('../models/queryModel');
 
@@ -111,6 +113,63 @@ queryController.combineQueryandLanguage = (req, res, next) => {
   return next();
 }
 
+queryController.bingQuery = async (req, res, next) => {
+  let url = 'https://api.bing.microsoft.com/v7.0/search?q=';
+  url = url.concat(encodeURIComponent(req.body.combined));
+  url = new URL(url);
+  const data = await fetch(url, {
+    method: 'GET',
+    headers:{
+      'Ocp-Apim-Subscription-Key': API_KEY
+    }
+  }).then(response => response.json())
+  .then(data => {
+    res.locals.webpages = data.webPages;
+    // console.log(data.webPages);
+    return next();
+  })
+  .catch(err => console.log(err));
+  // return data.webPages;
+};
+
+queryController.addResults = async (req, res, next) => {
+  const results = await res.locals.webpages.value.map((val) => val.url);
+  // results.map((val) => val.url);
+  const question = req.body.question;
+  const language = req.body.language;
+  Queries.findOneAndUpdate({
+    question: question, language: language}, 
+    {results: results}, 
+    (err, updated) => {
+      if(err){
+        console.log('error in addResults');
+        return next(err);
+      }
+      // console.log(updated);
+      res.locals.results = results;
+      return next();
+    
+    })
+}
+
+
+// const bingQuery = async (query) => {
+//   let url = 'https://api.bing.microsoft.com/v7.0/search?q=';
+//   url = url.concat(encodeURIComponent(query));
+//   url = new URL(url);
+//   // console.log(url);
+//   const data = await fetch(url, {
+//     method: 'GET',
+//     headers:{
+//       'Ocp-Apim-Subscription-Key': API_KEY
+//     }
+//   }).then(response => response.json())
+//   .then(data => {
+//     return data;
+//   })
+//   .catch(err => console.log(err));
+//   return data.webpages;
+// }
 
 
 module.exports = queryController;

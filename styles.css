@@ -12,6 +12,8 @@ ul {
 
 .queryList {
   border: 1px solid black;
+  max-width: 500px;
+  word-wrap:break-word;
 }
 
 .histList {

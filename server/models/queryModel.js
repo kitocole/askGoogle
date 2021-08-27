@@ -7,7 +7,7 @@ const querySchema = new Schema({
   language: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   generatedQuery: { type: String, required: false },
-  results: { type: Array, required: false }
+  results: { type: Array, default: [], required: false }
 });
 
 
@@ -18,7 +18,7 @@ const historySchema = new Schema({
   language: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   generatedQuery: { type: String, required: false },
-  results: { type: Array, required: false }
+  results: { type: Array,  default: [], required: false }
 });
 
 const Histories = mongoose.model('History', historySchema);

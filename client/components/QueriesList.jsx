@@ -6,7 +6,15 @@ const QueriesList = props => {
   const newArr = [];
   for(let i = 0; i < props.queryList.length; i++){
     // console.log(props.queryList[i]);
-    newArr.push(<Query deleteQuery={props.deleteQuery} combined={props.queryList[i].combined} question={props.queryList[i].query} language={props.queryList[i].language}/>);
+    newArr.push(<Query 
+      deleteQuery={props.deleteQuery} 
+      combined={props.queryList[i].combined} 
+      question={props.queryList[i].query} 
+      language={props.queryList[i].language}
+      results={props.queryList[i].results}
+      getResults={props.getResults}
+      identity = {i}
+      />);
   }
   return(
     <ul>
