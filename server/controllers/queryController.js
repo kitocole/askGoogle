@@ -1,5 +1,5 @@
 const queryController = {};
-const API_KEY = 'ca7b702bf6c646449330d37df9ae1dc9';
+const API_KEY = 'secret';
 const fetch = require('node-fetch');
 
 const { Queries, Histories } = require('../models/queryModel');
