@@ -6,9 +6,9 @@ const Query = props => {
     <div>
       <ul>
         <li>
-          <div>Query: {props.question}</div>
-          <div>Language: {props.language}</div>
-          <button type="delete" onClick={() => props.deleteQuery(props.question, props.language)}> DELETE </button>
+          <div className="secondary">Query: {props.question} Language: {props.language}</div>
+          <div className="primary">Search this: {props.combined} </div>
+          <button type="delete" onClick={() => props.deleteQuery(props.question, props.language, props.combined)}> DELETE </button>
         </li>
       </ul>
     </div>

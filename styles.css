@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald|Cabin');
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.lists {
+  display: flex;
+  justify-content: center;
+}
+
+.queryList {
+  border: 1px solid black;
+}
+
+.histList {
+  border: 1px solid black;
+}

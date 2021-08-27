@@ -23,21 +23,20 @@ class MainContainer extends Component {
   }
 
   addQuery(query,lang) {
+    console.log('starting add query');
     if(query === '' || lang === '') return;
     this.saveQuery(query, lang);
-    const newQuery = [...this.state.queryList];
-    newQuery.push({query: query, language: lang});
-    // console.log(newQuery);
-    return this.setState({queryList: newQuery});
+
   }
 
-  saveQuery(query, lang) {
-    if (query === '') return;
+  saveQuery(question, language) {
+    console.log('starting save query');
+    if (question === '') return;
     else {
       // console.log('beginning post req with:', query)
       const body = {
-        query,
-        lang
+        question,
+        language
       }
       fetch('/api/newQuery', {
         method: 'POST',
@@ -45,14 +44,15 @@ class MainContainer extends Component {
           'Content-Type': 'Application/JSON'
         },
         body: JSON.stringify(body)
-      }).then(response => response)
-        // .then(data => console.log(data))
+      }).then(response => this.getQueries())
+
         .catch(err => console.log("Save Query FAILED with ERR:", err));
     }
   }
 
-  deleteQuery(question, language) {
-    const body = {question, language};
+  deleteQuery(question, language, generatedQuery) {
+    console.log('starting delete query');
+    const body = {question, language, generatedQuery};
     fetch('/api/deleteQuery', {
       method: 'DELETE',
       headers: {
@@ -65,18 +65,24 @@ class MainContainer extends Component {
 
   componentDidMount() {
     this.getQueries();
-
   }
 
   getQueries() {
+    console.log('running get queries');
+    const queryArr = [];
     fetch('/api/getQueries').then(response => response.json())
-    .then(data => {
-      console.log('data: ', data);
-      const queryArr = [];
+    .then((data) => {
+      // console.log('data: ', data);
       for(let i = 0; i < data.length; i++){
-        queryArr.push({query: data[i].question, language: data[i].language});
+        queryArr.push({
+          query: data[i].question, 
+          language: data[i].language, 
+          combined: data[i].generatedQuery
+        });
       }
-      return this.setState({...this.state, queryList: queryArr});
+    })
+    .then( () => {
+      this.setState({...this.state, queryList: queryArr});
     })
     .catch(err => console.log('failed in component did mount', err));
   }
@@ -85,8 +91,8 @@ class MainContainer extends Component {
     return this.setState({...this.state, histList: [], history: false});
   };
 
-  showHistory() {
-    if(this.state.history) {
+  showHistory(change = false) {
+    if(change && this.state.history) {
       this.hideHistory();
       return;
     }
@@ -96,7 +102,11 @@ class MainContainer extends Component {
         // console.log(data);
         const histArr = [];
         for(let i = 0; i < data.length; i++){
-          histArr.push({query: data[i].question, language: data[i].language});
+          histArr.push({
+            query: data[i].question, 
+            language: data[i].language,
+            combined: data[i].generatedQuery
+          });
         }
         // console.log(histArr);
         return this.setState({...this.state, histList: histArr, history: true});
@@ -118,8 +128,8 @@ class MainContainer extends Component {
       .then(data => this.showHistory());
   };
 
-  restoreHistory(question, language) {
-    const body = {question, language};
+  restoreHistory(question, language, combined) {
+    const body = {question, language, combined};
     fetch('/api/restoreQuery', {
       method: 'DELETE',
       headers: {
@@ -132,16 +142,21 @@ class MainContainer extends Component {
     })
   };
 
-
+  
   render() {
     return(
       <div className="container">
         <div className="outerBox">
           { /* Start adding components here... */ }
           <QueryBox handleClick={this.addQuery} showHist={this.showHistory} />
-          <QueriesList queryList={this.state.queryList} deleteQuery={this.deleteQuery}/>
-          <HistoryList histList={this.state.histList} restoreHist={this.restoreHistory} deleteHist={this.deleteHistory} />
-          {/* <button style={{height: '100px', width: '100px'}} >click this</button> */}
+          <div className="lists">
+            <div className="queryList">
+              <QueriesList queryList={this.state.queryList} deleteQuery={this.deleteQuery}/>
+            </div>
+            <div className="histList">
+              <HistoryList histList={this.state.histList} restoreHist={this.restoreHistory} deleteHist={this.deleteHistory} />
+            </div>
+          </div>
         </div>
       </div>
     );

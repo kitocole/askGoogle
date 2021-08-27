@@ -8,22 +8,23 @@ const fetch = require('node-fetch');
 const queryController = require('./controllers/queryController.js');
 // const { mongoURI } = require('./../secret.js');
 const mongoURI = "mongodb+srv://kaeny:busta@clusterfk.l2djg.mongodb.net/askGoogle?retryWrites=true&w=majority"; 
-
+const bingRouter = require('./routes/bingRouter.js')
 mongoose.connect(mongoURI);
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/api/bing', bingRouter);
 
 app.get('/api/getQueries', queryController.getQueries, (req, res) => {
   // console.log(res.locals);
   return res.status(200).json(res.locals.queries);
 });
 
-app.post('/api/newQuery', queryController.createQuery, (req, res) => {
+app.post('/api/newQuery', queryController.combineQueryandLanguage, queryController.createQuery, (req, res) => {
   // console.log(req.body);
-  return res.sendStatus(200);
+  return res.status(200).json(res.locals.newQuery);
 });
 
 app.delete('/api/deleteQuery', queryController.deleteQuery, queryController.placeInHistory, (req, res) => {
