@@ -3,7 +3,7 @@ const express = require('express');
 
 const queryController = require('../controllers/queryController.js');
 const router = express.Router();
-const API_KEY = 'ca7b702bf6c646449330d37df9ae1dc9';
+const API_KEY = 'secret';
 
 router.post('/', queryController.bingQuery, queryController.addResults, (req, res) => {
   // console.log(res.locals.webpages);
