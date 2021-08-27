@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const fetch = require('node-fetch');
 const queryController = require('./controllers/queryController.js');
 // const { mongoURI } = require('./../secret.js');
-const mongoURI = "mongodb+srv://kaeny:busta@clusterfk.l2djg.mongodb.net/askGoogle?retryWrites=true&w=majority"; 
+const mongoURI = "mongodb+srv://kaeny:<SECRET>@clusterfk.l2djg.mongodb.net/askGoogle?retryWrites=true&w=majority"; 
 const bingRouter = require('./routes/bingRouter.js')
 mongoose.connect(mongoURI);
 
